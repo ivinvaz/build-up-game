@@ -41,6 +41,8 @@ public class Arma implements ItemInterface {
         this.dano = dano;
     }
 
+    @Override public String toString() { return this.nome; }
+
     public int getDano(Mochila mochila) {
         Artefato artefato = mochila.consultarAssociados().get(this);
         return this.dano + (artefato != null ? artefato.getAumento() : 0);

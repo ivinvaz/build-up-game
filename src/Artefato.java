@@ -31,6 +31,8 @@ public class Artefato implements ItemInterface {
     @Override public int getPeso() { return this.peso; }
     @Override public String getCategoria() { return this.categoria; }
 
+    @Override public String toString() { return this.nome; }
+
     public void editarNome(String nome) {
         if (nome == null || nome.trim().isEmpty()) throw new IllegalArgumentException("O nome não pode ficar vazio.");
         this.nome = nome.trim();
