@@ -33,7 +33,7 @@ Requisitos: JDK 8 ou superior.
 Na raiz do projeto:
 
 ```bash
-javac -encoding UTF-8 -d out Main.java src/*.java
+javac -encoding UTF-8 -d out Main.java GameGUI.java src/*.java
 java -cp out Main
 ```
 
