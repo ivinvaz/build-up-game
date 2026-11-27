@@ -110,6 +110,10 @@ public class GameGUI extends JFrame {
         form.add(button("Atualizar item selecionado", this::atualizarItem), c);
         c.gridy++;
         form.add(button("Remover item selecionado", this::removerItem), c);
+        c.gridy++;
+        form.add(button("Associar artefato a arma", this::associarArtefato), c);
+        c.gridy++;
+        form.add(button("Remover associação", this::removerAssociacao), c);
         itemType.addActionListener(e -> atualizarCamposTipo());
 
         inventoryList.setBackground(new Color(32, 37, 48));
@@ -280,6 +284,40 @@ public class GameGUI extends JFrame {
         for (Artefato a : mochila.consultarArtefatos()) result.add(new ItemSelecionado(null, a, null));
         for (Pocao p : mochila.consultarPocoes()) result.add(new ItemSelecionado(null, null, p));
         return result;
+    }
+
+    private void associarArtefato() {
+        List<Arma> armasLivres = new ArrayList<>();
+        for (Arma arma : mochila.consultarArmas()) {
+            if (!mochila.consultarAssociados().containsKey(arma)) armasLivres.add(arma);
+        }
+        List<Artefato> artefatosLivres = new ArrayList<>();
+        for (Artefato artefato : mochila.consultarArtefatos()) {
+            if (!mochila.consultarAssociados().containsValue(artefato)) artefatosLivres.add(artefato);
+        }
+        if (armasLivres.isEmpty() || artefatosLivres.isEmpty()) {
+            aviso("É necessário ter uma arma e um artefato livres na mochila."); return;
+        }
+        Arma arma = (Arma) JOptionPane.showInputDialog(this, "Escolha a arma:", "Associar artefato",
+                JOptionPane.QUESTION_MESSAGE, null, armasLivres.toArray(), armasLivres.get(0));
+        if (arma == null) return;
+        Artefato artefato = (Artefato) JOptionPane.showInputDialog(this, "Escolha o artefato:", "Associar artefato",
+                JOptionPane.QUESTION_MESSAGE, null, artefatosLivres.toArray(), artefatosLivres.get(0));
+        if (artefato == null) return;
+        mochila.associarArtefato(arma, artefato);
+        registrar(artefato.getNome() + " associado à arma " + arma.getNome() + ".");
+        atualizarTela();
+    }
+
+    private void removerAssociacao() {
+        List<Arma> associadas = new ArrayList<>(mochila.consultarAssociados().keySet());
+        if (associadas.isEmpty()) { aviso("Nenhuma arma possui artefato associado."); return; }
+        Arma arma = (Arma) JOptionPane.showInputDialog(this, "Escolha a arma:", "Remover associação",
+                JOptionPane.QUESTION_MESSAGE, null, associadas.toArray(), associadas.get(0));
+        if (arma == null) return;
+        Artefato removido = mochila.consultarAssociados().remove(arma);
+        registrar(removido.getNome() + " desassociado de " + arma.getNome() + ".");
+        atualizarTela();
     }
 
     private void batalhar() {
